@@ -1,8 +1,11 @@
+use std::fs;
 use anyhow::{Context, Result};
 use clap::{Parser, Subcommand};
 use std::fs::File;
-use std::io::{BufReader, Read, Write};
+use std::io::{BufReader, Read};
 use std::path::PathBuf;
+use img_parts::ImageEXIF;
+use img_parts::jpeg::Jpeg;
 
 #[derive(Parser)]
 #[command(name = "exif-tool")]
@@ -80,52 +83,18 @@ impl ExifTool {
         }
     }
 
+
     fn remove_exif_from_jpeg(input_path: &PathBuf, output_path: &PathBuf) -> Result<()> {
-        let mut buffer = Vec::new();
-        File::open(input_path)?.read_to_end(&mut buffer)?;
+        let input_data = fs::read(input_path)?;
+        let mut jpeg = Jpeg::from_bytes(input_data.into())?;
 
-        if buffer.len() < 4 || &buffer[0..2] != &[0xFF, 0xD8] {
-            anyhow::bail!("Not a valid JPEG file");
-        }
+        jpeg.set_exif(None);
 
-        let mut output_buffer = Vec::new();
-        output_buffer.extend_from_slice(&[0xFF, 0xD8]); // SOI
-
-        let mut i = 2;
-        while i < buffer.len() - 1 {
-            if buffer[i] == 0xFF {
-                let marker = buffer[i + 1];
-                // Skip EXIF APP1 segments
-                if marker == 0xE1 {
-                    let len = u16::from_be_bytes([buffer[i+2], buffer[i+3]]) as usize;
-                    if i + 4 + 6 <= buffer.len() && &buffer[i+4..i+10] == b"Exif\0\0" {
-                        i += 2 + len;
-                        continue;
-                    }
-                }
-                if marker == 0xDA {
-                    output_buffer.extend_from_slice(&buffer[i..]);
-                    break;
-                } else if (0xE0..=0xEF).contains(&marker) {
-                    let len = u16::from_be_bytes([buffer[i+2], buffer[i+3]]) as usize;
-                    output_buffer.extend_from_slice(&buffer[i..i + 2 + len]);
-                    i += 2 + len;
-                } else {
-                    output_buffer.push(buffer[i]);
-                    i += 1;
-                }
-            } else {
-                output_buffer.push(buffer[i]);
-                i += 1;
-            }
-        }
-
-        let mut out = File::create(output_path)?;
-        out.write_all(&output_buffer)?;
+        let mut out_file = File::create(output_path)?;
+        jpeg.encoder().write_to(&mut out_file)?;
         println!("EXIF metadata removed; saved to {:?}", output_path);
         Ok(())
     }
-
 
     pub fn show_info() {
         println!("=== ExifTool ===");
