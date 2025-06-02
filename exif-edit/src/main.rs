@@ -4,6 +4,7 @@ use clap::{Parser, Subcommand};
 use std::fs::File;
 use std::io::{BufReader, Read};
 use std::path::PathBuf;
+use image::{ImageFormat, ImageReader};
 use img_parts::ImageEXIF;
 use img_parts::jpeg::Jpeg;
 
@@ -78,6 +79,9 @@ impl ExifTool {
             Some("jpg") | Some("jpeg") | Some("JPG") | Some("JPEG") => {
                 Self::remove_exif_from_jpeg(file_path, output)
             }
+            Some("tiff") => {
+                Self::remove_exif_from_tiff(file_path, output)
+            }
             Some(ext) => anyhow::bail!("Unsupported file format: {}", ext),
             None => anyhow::bail!("Cannot determine file format"),
         }
@@ -93,6 +97,20 @@ impl ExifTool {
         let mut out_file = File::create(output_path)?;
         jpeg.encoder().write_to(&mut out_file)?;
         println!("EXIF metadata removed; saved to {:?}", output_path);
+        Ok(())
+    }
+
+    fn remove_exif_from_tiff(input_path: &PathBuf, output_path: &PathBuf) -> Result<()> {
+        // 1) open & decode
+        let img = ImageReader::open(input_path)?
+            .with_guessed_format()?
+            .decode()?;
+
+        // 2) re-encode as TIFF (ImageOutputFormat::Tiff writes no EXIF)
+        let mut out = File::create(output_path)?;
+        img.write_to(&mut out, ImageFormat::Tiff)?;
+
+        println!("All metadata stripped; saved to {:?}", output_path);
         Ok(())
     }
 
