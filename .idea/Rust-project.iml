@@ -2,10 +2,10 @@
 <module type="EMPTY_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/exif-edit/examples" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/exif-edit/src" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/exif-edit/tests" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/exif-edit/target" />
+      <sourceFolder url="file://$MODULE_DIR$/ExifManager/examples" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ExifManager/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/ExifManager/tests" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/ExifManager/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

@@ -41,18 +41,22 @@ fn main() -> Result<()> {
             cleaner::remove_exif(&file, output.as_ref(), overwrite)?
         }
         Commands::Info => {
-            println!("=== exif-edit ===");
+            println!("=== ExifManager ===");
+            println!("Jakub Stachecki, Krystian Bulanda");
             println!("Supported formats for reading EXIF:");
             println!("  • JPEG (.jpg, .jpeg)");
             println!("  • TIFF (.tif, .tiff)");
             println!("  • HEIF (.heif, .heic)");
             println!("  • WebP (.webp)\n");
             println!("Supported for EXIF removal:");
-            println!("  • JPEG (.jpg, .jpeg)\n");
-            println!("  • TIFF (.tif, .tiff)");
+            println!("  • JPEG (.jpg, .jpeg)");
+            println!("  • TIFF (.tif, .tiff)\n");
             println!("Libraries used:");
-            println!("  • exif_tool (kamadak-exif_tool)");
+            println!("  • exif (kamadak-exif)");
             println!("  • clap");
+            println!("  • anyhow");
+            println!("  • img-parts");
+            println!("  • image");
         }
     }
 
