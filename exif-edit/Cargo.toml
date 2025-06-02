@@ -5,5 +5,5 @@ edition = "2024"
 
 [dependencies]
 
-little_exif = "0.6.7"
 img-parts = "0.3.3"
+kamadak-exif = "0.6.1"
