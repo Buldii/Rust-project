@@ -7,3 +7,5 @@ edition = "2024"
 
 img-parts = "0.3.3"
 kamadak-exif = "0.6.1"
+anyhow = "1.0.98"
+clap = { version = "4.5.39", features = ["derive"] }
