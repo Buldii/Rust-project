@@ -8,8 +8,7 @@ pub fn read_metadata(file_path: &PathBuf) -> Result<()> {
     let mut bufreader = BufReader::new(&file);
     let exif_reader = exif::Reader::new();
     
-    let exif = exif_reader.read_from_container(&mut bufreader)
-        .with_context(|| format!("Cannot read file: {:?}", file_path))?;
+    let exif = exif_reader.read_from_container(&mut bufreader)?;
     
     println!("=== EXIF metadata for {:?} ===", file_path.file_name().unwrap());
     if exif.fields().count() == 0 {
