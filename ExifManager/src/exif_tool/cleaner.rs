@@ -5,6 +5,7 @@ use std::path::PathBuf;
 use image::{ImageFormat, ImageReader};
 use img_parts::ImageEXIF;
 use img_parts::jpeg::Jpeg;
+use img_parts::png::Png;
 
 pub fn remove_exif(file_path: &PathBuf, output_path: Option<&PathBuf>, overwrite: bool) -> Result<()> {
     if !overwrite && output_path.is_none() {
@@ -18,6 +19,9 @@ pub fn remove_exif(file_path: &PathBuf, output_path: Option<&PathBuf>, overwrite
         }
         Some("tiff") | Some("TIFF") | Some("TIF") | Some("tif") => {
             remove_exif_from_tiff(file_path, output)
+        }
+        Some("png") | Some("PNG") => {
+            remove_exif_from_png(file_path, output)
         }
         Some(ext) => bail!("Unsupported file format: {}", ext),
         None => bail!("Cannot determine file format"),
@@ -33,6 +37,17 @@ fn remove_exif_from_jpeg(input_path: &PathBuf, output_path: &PathBuf) -> Result<
     let mut out_file = File::create(output_path)?;
     jpeg.encoder().write_to(&mut out_file)?;
     println!("EXIF metadata removed; saved to {:?}", output_path);
+    Ok(())
+}
+
+fn remove_exif_from_png(input_path: &PathBuf, output_path: &PathBuf) -> Result<()> {
+    let input_data = std::fs::read(input_path)?;
+    let mut png = Png::from_bytes(input_data.into())?;
+    png.set_exif(None);
+    let mut out_file = File::create(output_path)?;
+    png.encoder().write_to(&mut out_file)?;
+
+    println!("EXIF metadata removed from PNG; saved to {:?}", output_path);
     Ok(())
 }
 

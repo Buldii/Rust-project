@@ -47,9 +47,11 @@ fn main() -> Result<()> {
             println!("  • JPEG (.jpg, .jpeg)");
             println!("  • TIFF (.tif, .tiff)");
             println!("  • HEIF (.heif, .heic)");
+            println!("  • PNG (.png)" );
             println!("  • WebP (.webp)\n");
             println!("Supported for EXIF removal:");
             println!("  • JPEG (.jpg, .jpeg)");
+            println!("  • PNG (.png)" );
             println!("  • TIFF (.tif, .tiff)\n");
             println!("Libraries used:");
             println!("  • exif (kamadak-exif)");
