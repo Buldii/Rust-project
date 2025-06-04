@@ -1,11 +1,10 @@
-use anyhow::{Context, Result};
+use anyhow::{Result};
 use std::fs::File;
 use std::io::BufReader;
 use std::path::PathBuf;
 
 pub fn read_metadata(file_path: &PathBuf) -> Result<()> {
-    let file = File::open(file_path)
-        .with_context(|| format!("Cannot open file: {:?}", file_path))?;
+    let file = File::open(file_path)?;
     let mut bufreader = BufReader::new(&file);
     let exif_reader = exif::Reader::new();
 
