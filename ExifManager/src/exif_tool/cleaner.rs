@@ -42,6 +42,7 @@ fn remove_exif_from_jpeg(input_path: &PathBuf, output_path: &PathBuf) -> Result<
 
     let mut out_file = File::create(output_path)?;
     jpeg.encoder().write_to(&mut out_file)?;
+    
     println!("EXIF metadata removed; saved to {:?}", output_path);
     Ok(())
 }
@@ -49,7 +50,9 @@ fn remove_exif_from_jpeg(input_path: &PathBuf, output_path: &PathBuf) -> Result<
 fn remove_exif_from_png(input_path: &PathBuf, output_path: &PathBuf) -> Result<()> {
     let input_data = fs::read(input_path)?;
     let mut png = Png::from_bytes(input_data.into())?;
+    
     png.set_exif(None);
+    
     let mut out_file = File::create(output_path)?;
     png.encoder().write_to(&mut out_file)?;
 
@@ -60,7 +63,9 @@ fn remove_exif_from_png(input_path: &PathBuf, output_path: &PathBuf) -> Result<(
 fn remove_exif_from_webp(input_path: &PathBuf, output_path: &PathBuf) -> Result<()> {
     let input_data = fs::read(input_path)?;
     let mut webp = WebP::from_bytes(input_data.into())?;
+    
     webp.set_exif(None);
+    
     let mut out_file = File::create(output_path)?;
     webp.encoder().write_to(&mut out_file)?;
     
