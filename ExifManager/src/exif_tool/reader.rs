@@ -27,7 +27,11 @@ pub fn read_metadata(file_path: &PathBuf) -> Result<()> {
 }
 
 fn display_all_fields(exif: &exif::Exif) {
-    for field in exif.fields() {
+    let mut fields_list: Vec<_> = exif.fields().collect();
+
+    fields_list.sort_by_key(|field| field.tag.to_string());
+    
+    for field in fields_list {
         println!(
             "{}: {}",
             field.tag,
